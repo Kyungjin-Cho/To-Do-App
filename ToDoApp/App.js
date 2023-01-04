@@ -34,6 +34,7 @@ export default function App() {
       <TextInput
         onChangeText={onChangeText}
         value={text}
+        placeholderTextColor="darkgrey"
         placeholder={working ? "What do you want to do?🤩" : "Where do you want to go?😎"}
         style={styles.input}
       />
