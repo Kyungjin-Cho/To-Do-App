@@ -9,7 +9,7 @@ import {
   Alert,
   ScrollView,
 } from "react-native";
-import { Fontisto } from '@expo/vector-icons';
+import { Fontisto, Feather } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from "./color";
 
@@ -38,7 +38,7 @@ export default function App() {
     }
     const newToDos = {
       ...toDos,
-      [Date.now()]: { text, working },
+      [Date.now()]: { text, working, completed: false, },
     };
     setToDos(newToDos);
     await saveToDos(newToDos);
@@ -58,6 +58,13 @@ export default function App() {
       },
     ]);
   };
+
+  const checkToDo = (key) => {
+    onPress: () => {
+      toDos.completed = !toDos.completed;
+    }
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
@@ -96,7 +103,26 @@ export default function App() {
         {Object.keys(toDos).map((key) =>
           toDos[key].working === working ? (
             <View style={styles.toDo} key={key}>
-              <Text style={styles.toDoText}>{toDos[key].text}</Text>
+              <TouchableOpacity>
+                <View 
+                    style={styles.completeCircle}
+                    onPressOut={() => this.props.checkToDo(key)}>
+                    toDos.completed ? 
+                  <Feather name="check-square" size={24} color={theme.grey} />
+                  : <Feather name="square" size={24} color={theme.grey} />
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity>
+                <TextInput 
+                  style={styles.toDoText}
+                  onChangeText={onChangeText}
+                  returnKeyType="done"
+                >
+                  {toDos[key].text}
+                </TextInput>
+              </TouchableOpacity>
+              
               <TouchableOpacity onPress={() => deleteToDo(key)}>
                 <Fontisto name="trash" size={18} color={theme.grey} />
               </TouchableOpacity>
@@ -145,5 +171,10 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "600",
+    marginLeft: 30,
   },
+  completeCircle: {
+    marginRight: 20,
+    marginLeft: 20,
+  }
 });
